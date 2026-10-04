@@ -1,0 +1,8 @@
+name: portpilot_app_env
+channels:
+  - snowflake
+dependencies:
+  - snowflake-snowpark-python
+  - streamlit
+  - pandas
+  - altair
