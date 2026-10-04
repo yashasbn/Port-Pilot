@@ -1,0 +1,318 @@
+ALTER SESSION SET QUOTED_IDENTIFIERS_IGNORE_CASE = TRUE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE ROLE PORTPILOT_ENGINEER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE WAREHOUSE PORTPILOT_LOAD_WH;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE SCHEMA PORTPILOT.RAW;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+CREATE OR REPLACE TABLE RAW.DIM_CUSTOMER USING TEMPLATE (SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*)) WITHIN GROUP (ORDER BY ORDER_ID) FROM TABLE(INFER_SCHEMA(LOCATION => '@RAW.LANDING/dim_customer.csv.gz', FILE_FORMAT => 'RAW.CSV_GZ')));
++------------------------------------------+
+| status                                   |
+|------------------------------------------|
+| Table DIM_CUSTOMER successfully created. |
++------------------------------------------+
+COPY INTO RAW.DIM_CUSTOMER FROM @RAW.LANDING/dim_customer.csv.gz FILE_FORMAT = (FORMAT_NAME = 'RAW.CSV_GZ') MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE;
++--------------------------------------------------------------------------------------------------------------------------+
+|            |        |            |            |           |            |           |            | first_err | first_erro |
+|            |        | rows_parse | rows_loade | error_lim | errors_see | first_err | first_erro | or_charac | r_column_n |
+| file       | status | d          | d          | it        | n          | or        | r_line     | ter       | ame        |
+|------------+--------+------------+------------+-----------+------------+-----------+------------+-----------+------------|
+| landing/di | LOADED | 20         | 20         | 1         | 0          | None      | None       | None      | None       |
+| m_customer |        |            |            |           |            |           |            |           |            |
+| .csv.gz    |        |            |            |           |            |           |            |           |            |
++--------------------------------------------------------------------------------------------------------------------------+
+CREATE OR REPLACE TABLE RAW.DIM_VESSEL USING TEMPLATE (SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*)) WITHIN GROUP (ORDER BY ORDER_ID) FROM TABLE(INFER_SCHEMA(LOCATION => '@RAW.LANDING/dim_vessel.csv.gz', FILE_FORMAT => 'RAW.CSV_GZ')));
++----------------------------------------+
+| status                                 |
+|----------------------------------------|
+| Table DIM_VESSEL successfully created. |
++----------------------------------------+
+COPY INTO RAW.DIM_VESSEL FROM @RAW.LANDING/dim_vessel.csv.gz FILE_FORMAT = (FORMAT_NAME = 'RAW.CSV_GZ') MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE;
++--------------------------------------------------------------------------------------------------------------------------+
+|            |        |            |            |           |            |           |            | first_err | first_erro |
+|            |        | rows_parse | rows_loade | error_lim | errors_see | first_err | first_erro | or_charac | r_column_n |
+| file       | status | d          | d          | it        | n          | or        | r_line     | ter       | ame        |
+|------------+--------+------------+------------+-----------+------------+-----------+------------+-----------+------------|
+| landing/di | LOADED | 120        | 120        | 1         | 0          | None      | None       | None      | None       |
+| m_vessel.c |        |            |            |           |            |           |            |           |            |
+| sv.gz      |        |            |            |           |            |           |            |           |            |
++--------------------------------------------------------------------------------------------------------------------------+
+CREATE OR REPLACE TABLE RAW.FACT_CONTAINER_JOURNEY USING TEMPLATE (SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*)) WITHIN GROUP (ORDER BY ORDER_ID) FROM TABLE(INFER_SCHEMA(LOCATION => '@RAW.LANDING/fact_container_journey.csv.gz', FILE_FORMAT => 'RAW.CSV_GZ')));
++----------------------------------------------------+
+| status                                             |
+|----------------------------------------------------|
+| Table FACT_CONTAINER_JOURNEY successfully created. |
++----------------------------------------------------+
+COPY INTO RAW.FACT_CONTAINER_JOURNEY FROM @RAW.LANDING/fact_container_journey.csv.gz FILE_FORMAT = (FORMAT_NAME = 'RAW.CSV_GZ') MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE;
++--------------------------------------------------------------------------------------------------------------------------+
+|            |        |            |            |           |            |           |            | first_err | first_erro |
+|            |        | rows_parse | rows_loade | error_lim | errors_see | first_err | first_erro | or_charac | r_column_n |
+| file       | status | d          | d          | it        | n          | or        | r_line     | ter       | ame        |
+|------------+--------+------------+------------+-----------+------------+-----------+------------+-----------+------------|
+| landing/fa | LOADED | 798000     | 798000     | 1         | 0          | None      | None       | None      | None       |
+| ct_contain |        |            |            |           |            |           |            |           |            |
+| er_journey |        |            |            |           |            |           |            |           |            |
+| .csv.gz    |        |            |            |           |            |           |            |           |            |
++--------------------------------------------------------------------------------------------------------------------------+
+CREATE OR REPLACE TABLE RAW.FACT_CONTAINER_EVENT USING TEMPLATE (SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*)) WITHIN GROUP (ORDER BY ORDER_ID) FROM TABLE(INFER_SCHEMA(LOCATION => '@RAW.LANDING/fact_container_event.csv.gz', FILE_FORMAT => 'RAW.CSV_GZ')));
++--------------------------------------------------+
+| status                                           |
+|--------------------------------------------------|
+| Table FACT_CONTAINER_EVENT successfully created. |
++--------------------------------------------------+
+COPY INTO RAW.FACT_CONTAINER_EVENT FROM @RAW.LANDING/fact_container_event.csv.gz FILE_FORMAT = (FORMAT_NAME = 'RAW.CSV_GZ') MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE;
++--------------------------------------------------------------------------------------------------------------------------+
+|            |        |            |            |           |            |           |            | first_err | first_erro |
+|            |        | rows_parse | rows_loade | error_lim | errors_see | first_err | first_erro | or_charac | r_column_n |
+| file       | status | d          | d          | it        | n          | or        | r_line     | ter       | ame        |
+|------------+--------+------------+------------+-----------+------------+-----------+------------+-----------+------------|
+| landing/fa | LOADED | 6948049    | 6948049    | 1         | 0          | None      | None       | None      | None       |
+| ct_contain |        |            |            |           |            |           |            |           |            |
+| er_event.c |        |            |            |           |            |           |            |           |            |
+| sv.gz      |        |            |            |           |            |           |            |           |            |
++--------------------------------------------------------------------------------------------------------------------------+
+CREATE OR REPLACE TABLE RAW.FACT_DELAY_EVENT USING TEMPLATE (SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*)) WITHIN GROUP (ORDER BY ORDER_ID) FROM TABLE(INFER_SCHEMA(LOCATION => '@RAW.LANDING/fact_delay_event.csv.gz', FILE_FORMAT => 'RAW.CSV_GZ')));
++----------------------------------------------+
+| status                                       |
+|----------------------------------------------|
+| Table FACT_DELAY_EVENT successfully created. |
++----------------------------------------------+
+COPY INTO RAW.FACT_DELAY_EVENT FROM @RAW.LANDING/fact_delay_event.csv.gz FILE_FORMAT = (FORMAT_NAME = 'RAW.CSV_GZ') MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE;
++--------------------------------------------------------------------------------------------------------------------------+
+|            |        |            |            |           |            |           |            | first_err | first_erro |
+|            |        | rows_parse | rows_loade | error_lim | errors_see | first_err | first_erro | or_charac | r_column_n |
+| file       | status | d          | d          | it        | n          | or        | r_line     | ter       | ame        |
+|------------+--------+------------+------------+-----------+------------+-----------+------------+-----------+------------|
+| landing/fa | LOADED | 114630     | 114630     | 1         | 0          | None      | None       | None      | None       |
+| ct_delay_e |        |            |            |           |            |           |            |           |            |
+| vent.csv.g |        |            |            |           |            |           |            |           |            |
+| z          |        |            |            |           |            |           |            |           |            |
++--------------------------------------------------------------------------------------------------------------------------+
+CREATE OR REPLACE TABLE RAW.ADVISORY_DOCUMENTS USING TEMPLATE (SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*)) WITHIN GROUP (ORDER BY ORDER_ID) FROM TABLE(INFER_SCHEMA(LOCATION => '@RAW.LANDING/advisory_documents.csv.gz', FILE_FORMAT => 'RAW.CSV_GZ')));
++------------------------------------------------+
+| status                                         |
+|------------------------------------------------|
+| Table ADVISORY_DOCUMENTS successfully created. |
++------------------------------------------------+
+COPY INTO RAW.ADVISORY_DOCUMENTS FROM @RAW.LANDING/advisory_documents.csv.gz FILE_FORMAT = (FORMAT_NAME = 'RAW.CSV_GZ') MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE;
++--------------------------------------------------------------------------------------------------------------------------+
+|            |        |            |            |           |            |           |            | first_err | first_erro |
+|            |        | rows_parse | rows_loade | error_lim | errors_see | first_err | first_erro | or_charac | r_column_n |
+| file       | status | d          | d          | it        | n          | or        | r_line     | ter       | ame        |
+|------------+--------+------------+------------+-----------+------------+-----------+------------+-----------+------------|
+| landing/ad | LOADED | 23         | 23         | 1         | 0          | None      | None       | None      | None       |
+| visory_doc |        |            |            |           |            |           |            |           |            |
+| uments.csv |        |            |            |           |            |           |            |           |            |
+| .gz        |        |            |            |           |            |           |            |           |            |
++--------------------------------------------------------------------------------------------------------------------------+
+USE WAREHOUSE PORTPILOT_WH;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+CREATE TABLE IF NOT EXISTS PORTPILOT.GOVERNANCE.CUSTOMER_ACCESS (role_name STRING, customer_id STRING);
++------------------------------------------------------+
+| status                                               |
+|------------------------------------------------------|
+| CUSTOMER_ACCESS already exists, statement succeeded. |
++------------------------------------------------------+
+DELETE FROM PORTPILOT.GOVERNANCE.CUSTOMER_ACCESS;
++------------------------+
+| number of rows deleted |
+|------------------------|
+| 3                      |
++------------------------+
+INSERT INTO PORTPILOT.GOVERNANCE.CUSTOMER_ACCESS VALUES
+  ('PORTPILOT_CUSTOMER_SUCCESS','MERIDIAN_CHEMICALS_GMBH'),
+  ('PORTPILOT_CUSTOMER_SUCCESS','CUSTOMER_002'),
+  ('PORTPILOT_CUSTOMER_SUCCESS','CUSTOMER_003');
++-------------------------+
+| number of rows inserted |
+|-------------------------|
+| 3                       |
++-------------------------+
+CREATE OR REPLACE SECURE VIEW PORTPILOT.SEMANTIC.V_CONTAINER_JOURNEY AS
+SELECT j.container_id, j.booking_date, j.customer_id,
+  c.tier AS customer_tier,
+  CASE WHEN IS_ROLE_IN_SESSION('PORTPILOT_OPS_ANALYST') OR IS_ROLE_IN_SESSION('PORTPILOT_AUDITOR')
+       THEN c.contact_email ELSE '***MASKED***' END AS contact_email,
+  j.trade_lane, j.vessel_id, j.on_time_delivery, j.delay_hours, j.documentation_late,
+  j.routed_through_sgsin, WEEKISO(j.booking_date) AS iso_week
+FROM PORTPILOT.RAW.FACT_CONTAINER_JOURNEY j
+JOIN PORTPILOT.RAW.DIM_CUSTOMER c ON c.customer_id = j.customer_id
+WHERE IS_ROLE_IN_SESSION('PORTPILOT_OPS_ANALYST') OR IS_ROLE_IN_SESSION('PORTPILOT_EXEC')
+   OR IS_ROLE_IN_SESSION('PORTPILOT_AUDITOR') OR IS_ROLE_IN_SESSION('PORTPILOT_ENGINEER')
+   OR EXISTS (SELECT 1 FROM PORTPILOT.GOVERNANCE.CUSTOMER_ACCESS a
+              WHERE a.customer_id = j.customer_id AND a.role_name = CURRENT_ROLE());
++------------------------------------------------+
+| status                                         |
+|------------------------------------------------|
+| View V_CONTAINER_JOURNEY successfully created. |
++------------------------------------------------+
+CREATE OR REPLACE SECURE VIEW PORTPILOT.SEMANTIC.V_DELAY_EVENT AS
+SELECT d.container_id, d.cause_code, d.delay_hours, d.event_date,
+       WEEKISO(d.event_date) AS iso_week, j.trade_lane
+FROM PORTPILOT.RAW.FACT_DELAY_EVENT d
+JOIN PORTPILOT.RAW.FACT_CONTAINER_JOURNEY j ON j.container_id = d.container_id;
++------------------------------------------+
+| status                                   |
+|------------------------------------------|
+| View V_DELAY_EVENT successfully created. |
++------------------------------------------+
+CREATE OR REPLACE TABLE PORTPILOT.SEMANTIC.EVENT_VOLUME_DAILY AS
+SELECT TO_DATE(event_at_utc) AS event_day, source_system, event_type, COUNT(*) AS event_count
+FROM PORTPILOT.RAW.FACT_CONTAINER_EVENT GROUP BY 1, 2, 3;
++------------------------------------------------+
+| status                                         |
+|------------------------------------------------|
+| Table EVENT_VOLUME_DAILY successfully created. |
++------------------------------------------------+
+USE ROLE SECURITYADMIN;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT SELECT ON VIEW  PORTPILOT.SEMANTIC.V_CONTAINER_JOURNEY TO ROLE PORTPILOT_OPS_ANALYST;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT SELECT ON VIEW  PORTPILOT.SEMANTIC.V_CONTAINER_JOURNEY TO ROLE PORTPILOT_CUSTOMER_SUCCESS;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT SELECT ON VIEW  PORTPILOT.SEMANTIC.V_CONTAINER_JOURNEY TO ROLE PORTPILOT_EXEC;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT SELECT ON VIEW  PORTPILOT.SEMANTIC.V_CONTAINER_JOURNEY TO ROLE PORTPILOT_AUDITOR;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT SELECT ON VIEW  PORTPILOT.SEMANTIC.V_DELAY_EVENT TO ROLE PORTPILOT_OPS_ANALYST;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+GRANT SELECT ON TABLE PORTPILOT.SEMANTIC.EVENT_VOLUME_DAILY TO ROLE PORTPILOT_OPS_ANALYST;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE ROLE PORTPILOT_ENGINEER;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE WAREHOUSE PORTPILOT_WH;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT 'journeys' t, COUNT(*) n FROM PORTPILOT.RAW.FACT_CONTAINER_JOURNEY
+UNION ALL SELECT 'events', COUNT(*) FROM PORTPILOT.RAW.FACT_CONTAINER_EVENT;
++--------------------+
+| T        | N       |
+|----------+---------|
+| journeys | 798000  |
+| events   | 6948049 |
++--------------------+
+SELECT iso_week, ROUND(100*AVG(on_time_delivery),1) AS otd_pct
+FROM PORTPILOT.SEMANTIC.V_CONTAINER_JOURNEY
+WHERE trade_lane IN ('APAC_DOMESTIC','NORTH_ASIA','TRANS_TASMAN') AND iso_week BETWEEN 30 AND 36
+GROUP BY 1 ORDER BY 1;
++--------------------+
+| ISO_WEEK | OTD_PCT |
+|----------+---------|
+| 30       | 84.6    |
+| 31       | 85.8    |
+| 32       | 85.1    |
+| 33       | 77.0    |
+| 34       | 82.7    |
+| 35       | 84.7    |
+| 36       | 86.0    |
++--------------------+
+SELECT cause_code, COUNT(*) AS events FROM PORTPILOT.SEMANTIC.V_DELAY_EVENT
+WHERE iso_week = 33 AND trade_lane IN ('APAC_DOMESTIC','NORTH_ASIA','TRANS_TASMAN')
+GROUP BY 1 ORDER BY 2 DESC;
++---------------------------------+
+| CAUSE_CODE             | EVENTS |
+|------------------------+--------|
+| CONGESTION             | 4269   |
+| CUSTOMER_DOCUMENTATION | 444    |
+| EQUIPMENT              | 405    |
++---------------------------------+
+SELECT event_day,
+  SUM(IFF(source_system='TOS_ROTTERDAM' AND event_type='GATE_OUT', event_count, 0)) AS rotterdam_gate_out,
+  SUM(IFF(source_system<>'TOS_ROTTERDAM' AND event_type='GATE_OUT', event_count, 0)) AS other_gate_out
+FROM PORTPILOT.SEMANTIC.EVENT_VOLUME_DAILY
+WHERE event_day BETWEEN '2026-08-31' AND '2026-09-04' GROUP BY 1 ORDER BY 1;
++--------------------------------------------------+
+| EVENT_DAY  | ROTTERDAM_GATE_OUT | OTHER_GATE_OUT |
+|------------+--------------------+----------------|
+| 2026-08-31 | 1120               | 5387           |
+| 2026-09-01 | 0                  | 5410           |
+| 2026-09-02 | 0                  | 5422           |
+| 2026-09-03 | 0                  | 5508           |
+| 2026-09-04 | 1106               | 5458           |
++--------------------------------------------------+
+USE SECONDARY ROLES NONE;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+USE ROLE PORTPILOT_OPS_ANALYST;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT CURRENT_ROLE() r, COUNT(DISTINCT customer_id) customers, MAX(contact_email) email FROM PORTPILOT.SEMANTIC.V_CONTAINER_JOURNEY;
++--------------------------------------------------------------------+
+| R                     | CUSTOMERS | EMAIL                          |
+|-----------------------+-----------+--------------------------------|
+| PORTPILOT_OPS_ANALYST | 20        | pacific-retail@example.invalid |
++--------------------------------------------------------------------+
+USE ROLE PORTPILOT_CUSTOMER_SUCCESS;
++----------------------------------+
+| status                           |
+|----------------------------------|
+| Statement executed successfully. |
++----------------------------------+
+SELECT CURRENT_ROLE() r, COUNT(DISTINCT customer_id) customers, MAX(contact_email) email FROM PORTPILOT.SEMANTIC.V_CONTAINER_JOURNEY;
++-------------------------------------------------------+
+| R                          | CUSTOMERS | EMAIL        |
+|----------------------------+-----------+--------------|
+| PORTPILOT_CUSTOMER_SUCCESS | 3         | ***MASKED*** |
++-------------------------------------------------------+

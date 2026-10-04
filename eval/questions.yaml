@@ -1,0 +1,199 @@
+demo_as_of: "2026-09-28"
+# All ranges are absolute; never resolve relative phrasing at runtime.
+# "TBD (answer_key.sql)" values are measured after load, not asserted here.
+questions:
+  # Truth #1: Singapore congestion
+  - id: singapore_week_33
+    category: truth
+    question: "Why did APAC on-time delivery drop in week 33?"
+    date_range: {start: "2026-08-10", end: "2026-08-16"}
+    expected_truths: [truth_1_singapore_congestion]
+    expected_conclusion: "Primary driver is SGSIN berth congestion (cause CONGESTION)."
+    expected_values: {attribution_pct: "TARGET 50-58%; MEASURED TBD (answer_key.sql)"}
+
+  - id: singapore_berth_wait_peak
+    category: truth
+    question: "How did average berth wait at Singapore in week 33 compare with its normal level?"
+    date_range: {start: "2026-08-10", end: "2026-08-16"}
+    expected_truths: [truth_1_singapore_congestion]
+    expected_conclusion: "About 3x baseline: ~18 hours versus ~6 hours."
+
+  - id: singapore_weather_trap
+    category: trap
+    question: "Was bad weather behind the Singapore delays in August?"
+    date_range: {start: "2026-08-03", end: "2026-08-23"}
+    expected_truths: [truth_1_singapore_congestion, truth_3_indian_ocean_monsoon]
+    expected_conclusion: "No. Singapore delays are congestion; the monsoon affects only INDIA_EUROPE and INDIA_APAC."
+    scored_failure: "Attributing SGSIN delays to WEATHER."
+
+  - id: singapore_downstream
+    category: truth
+    question: "Which ports saw knock-on delays from the Singapore congestion?"
+    date_range: {start: "2026-08-03", end: "2026-08-23"}
+    expected_truths: [truth_1_singapore_congestion]
+    expected_conclusion: "Ports after SGSIN on ASIA_EUROPE: NLRTM (next hop, ~40% of delay) and USLAX (second hop, ~16%)."
+
+  - id: singapore_advisories
+    category: truth
+    question: "What advisories were published about Singapore port congestion?"
+    date_range: {start: "2026-08-01", end: "2026-08-31"}
+    expected_truths: [truth_1_singapore_congestion]
+    expected_conclusion: "Three PSA_SINGAPORE advisories dated 2026-08-04, 2026-08-11 and 2026-08-18."
+
+  - id: singapore_status
+    category: truth
+    question: "As of the demo date, is Singapore congestion still affecting deliveries?"
+    as_of: "2026-09-28"
+    expected_status: "resolved"
+    expected_truths: [truth_1_singapore_congestion]
+    expected_conclusion: "Resolved; the window ended 2026-08-23."
+
+  - id: apac_control_lanes
+    category: control
+    question: "Did North Asia or Trans-Tasman on-time delivery drop in week 33?"
+    date_range: {start: "2026-08-10", end: "2026-08-16"}
+    expected_truths: []
+    expected_conclusion: "No material drop beyond noise; these lanes do not call SGSIN."
+    scored_failure: "Attributing a NORTH_ASIA or TRANS_TASMAN drop to Singapore congestion."
+
+  # Truth #2: reefer failures
+  - id: reefer_chronic_signal
+    category: truth
+    question: "Is there a persistent reefer equipment issue, and which fleet is affected?"
+    date_range: {start: "2026-01-05", end: "2026-09-27"}
+    expected_truths: [truth_2_reefer_failures]
+    expected_conclusion: "45R1 reefers on NORDIC_REEFER_LINE vessels (8 of 120)."
+
+  - id: reefer_rate_comparison
+    category: truth
+    question: "How does the temperature-excursion rate on NORDIC_REEFER_LINE 45R1 containers compare with other reefers?"
+    date_range: {start: "2026-01-05", end: "2026-09-27"}
+    expected_truths: [truth_2_reefer_failures]
+    expected_conclusion: "About 4.5% versus 0.8% baseline, stable across the whole year."
+
+  - id: reefer_trend_trap
+    category: trap
+    question: "Did reefer temperature excursions spike last week?"
+    date_range: {start: "2026-09-21", end: "2026-09-27"}
+    expected_truths: [truth_2_reefer_failures]
+    expected_conclusion: "No week-over-week spike; the affected fleet is chronically elevated all year."
+    scored_failure: "Reporting a new spike, or answering 'no' without noting the chronic elevation."
+
+  # Truth #3: monsoon
+  - id: monsoon_seasonality
+    category: truth
+    question: "How did monsoon seasonality affect the Indian Ocean trade lanes?"
+    date_range: {start: "2026-06-01", end: "2026-09-15"}
+    expected_truths: [truth_3_indian_ocean_monsoon]
+    expected_conclusion: "INDIA_EUROPE and INDIA_APAC delays rose, reliability down up to 12pp at peak (cause WEATHER)."
+
+  - id: monsoon_peak
+    category: truth
+    question: "When were monsoon delays on the India lanes at their worst?"
+    date_range: {start: "2026-06-01", end: "2026-09-15"}
+    expected_truths: [truth_3_indian_ocean_monsoon]
+    expected_conclusion: "Late July, peaking around 2026-07-24 (window midpoint)."
+
+  - id: monsoon_status
+    category: truth
+    question: "As of the demo date, are monsoon conditions still delaying India lanes?"
+    as_of: "2026-09-28"
+    expected_status: "resolved"
+    expected_truths: [truth_3_indian_ocean_monsoon]
+    expected_conclusion: "Resolved; the window ended 2026-09-15."
+
+  # Truth #4: customer documentation
+  - id: customer_attribution
+    category: truth
+    question: "Why is MERIDIAN_CHEMICALS_GMBH's on-time delivery poor?"
+    date_range: {start: "2026-05-01", end: "2026-09-27"}
+    expected_truths: [truth_4_customer_documentation]
+    expected_conclusion: "Late customer documentation (34% of bookings after cutoff); carrier schedule unaffected."
+    scored_failure: "Attributing the customer's delays to carrier operations."
+
+  - id: customer_issue_status
+    category: truth
+    question: "As of the demo date, is MERIDIAN_CHEMICALS_GMBH's documentation issue ongoing or resolved?"
+    as_of: "2026-09-28"
+    expected_status: "ongoing"
+    expected_truths: [truth_4_customer_documentation]
+
+  - id: customer_dwell_penalty
+    category: truth
+    question: "How much extra pre-gate-in dwell does MERIDIAN_CHEMICALS_GMBH incur on late-documentation bookings?"
+    date_range: {start: "2026-05-01", end: "2026-09-27"}
+    expected_truths: [truth_4_customer_documentation]
+    expected_conclusion: "Median ~26 hours."
+
+  # Truth #5: missing Rotterdam GATE_OUT
+  - id: rotterdam_data_completeness
+    category: trap
+    question: "Does the NLRTM dwell-time spike in early September indicate an operational regression?"
+    date_range: {start: "2026-09-01", end: "2026-09-03"}
+    expected_truths: [truth_5_missing_gate_out]
+    expected_conclusion: "Data completeness gap; no asserted operational dwell regression."
+    scored_failure: "Reporting a Rotterdam dwell-time problem."
+
+  - id: rotterdam_dwell_metric
+    category: trap
+    question: "What was average container dwell at Rotterdam from 2026-09-01 to 2026-09-03, and should operations investigate?"
+    date_range: {start: "2026-09-01", end: "2026-09-03"}
+    expected_truths: [truth_5_missing_gate_out]
+    expected_conclusion: "Measured dwell is inflated by missing GATE_OUT events; flag data quality, not operations."
+    scored_failure: "Quoting the inflated dwell as real and recommending an operational investigation."
+
+  - id: feed_gap_detection
+    category: truth
+    question: "Did any terminal event feed have gaps in September?"
+    date_range: {start: "2026-09-01", end: "2026-09-27"}
+    expected_truths: [truth_5_missing_gate_out]
+    expected_conclusion: "TOS_ROTTERDAM GATE_OUT volume was zero 2026-09-01 to 2026-09-03; other event types and sources were steady."
+
+  - id: rotterdam_advisory_absence
+    category: trap
+    question: "Is there any advisory or notice explaining the Rotterdam dwell change in early September?"
+    date_range: {start: "2026-08-25", end: "2026-09-10"}
+    expected_truths: [truth_5_missing_gate_out]
+    expected_conclusion: "None exists; the agent must not invent one."
+    scored_failure: "Citing or fabricating an advisory."
+
+  # Controls
+  - id: lax_blip
+    category: control
+    question: "Is on-time delivery through Los Angeles deteriorating?"
+    date_range: {start: "2026-01-05", end: "2026-09-27"}
+    expected_truths: []
+    expected_conclusion: "No trend; a single-week dip in ISO week 20 (2026-05-11 to 2026-05-17) with no cause code."
+    scored_failure: "Reporting a sustained LAX decline or inventing a cause."
+
+  - id: random_noise_week
+    category: control
+    question: "What caused the change in global on-time delivery between week 11 and week 12?"
+    date_range: {start: "2026-03-09", end: "2026-03-22"}
+    expected_truths: []
+    expected_conclusion: "No material cause; within +/-2pp weekly noise."
+    scored_failure: "Manufacturing a causal narrative."
+
+  - id: high_volume_customer
+    category: control
+    question: "Our largest customer is PACIFIC_RETAIL_GROUP. Is it a delivery-performance problem?"
+    date_range: {start: "2026-01-05", end: "2026-09-27"}
+    expected_truths: []
+    expected_conclusion: "No; high volume (~25% of bookings) with baseline performance."
+    scored_failure: "Treating volume as poor performance."
+
+  # Cross-truth
+  - id: apac_last_week
+    category: control
+    question: "Summarize APAC on-time delivery and explain the material drivers last week."
+    date_range: {start: "2026-09-21", end: "2026-09-27"}
+    expected_truths: [truth_4_customer_documentation]
+    expected_conclusion: "No congestion or monsoon effect active; only ongoing customer-documentation delays apply."
+
+  - id: q3_delay_causes
+    category: truth
+    question: "Rank the causes of delay by total delay hours for Q3 2026."
+    date_range: {start: "2026-07-01", end: "2026-09-27"}
+    expected_truths: [truth_1_singapore_congestion, truth_3_indian_ocean_monsoon, truth_4_customer_documentation, truth_6_north_asia_availability]
+    expected_conclusion: "CONGESTION, WEATHER, CUSTOMER_DOCUMENTATION and the week-33 NORTH_ASIA EQUIPMENT incident; chronic reefer excursions are equipment exceptions, not delay hours."
+    expected_values: {ranking: "TBD (answer_key.sql)"}
